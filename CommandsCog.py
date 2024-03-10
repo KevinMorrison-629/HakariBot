@@ -19,7 +19,9 @@ class CommandsCog(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print("Ready!")
+        log(f"Ready!", LogLevel.INFO)
+
+    # TODO : Need to rename the commands such that they dont conflict with Mudae (since we probably want both bots in the server)
 
     @commands.command(name="hello", help="Say Hi!")
     async def hello(self, ctx : commands.Context):
@@ -42,7 +44,49 @@ class CommandsCog(commands.Cog):
         command = HakariCommand(CommandsEnum.COIN_TOSS, args, metadata)
         self.bot.CommandQueue.put(command)
         return
+    
+    @commands.command(name="rps", help="")
+    async def rockPaperScissors(self, ctx : commands.Context):
+        metadata = Metadata(ctx.author.id, ctx.channel.id, ctx.guild.id)
+        args = ctx.message.content.split()
+        command = HakariCommand(CommandsEnum.ROCK_PAPER_SCISSORS, args, metadata)
+        self.bot.CommandQueue.put(command)
+
+    @commands.command(name="allowance", help="")
+    async def allowance(self, ctx : commands.Context):
+        metadata = Metadata(ctx.author.id, ctx.channel.id, ctx.guild.id)
+        args = ctx.message.content.split()
+        command = HakariCommand(CommandsEnum.DAILY_ALLOWANCE, args, metadata)
+        self.bot.CommandQueue.put(command)
+
+    @commands.command(name="top", help="")
+    async def top(self, ctx : commands.Context):
+        metadata = Metadata(ctx.author.id, ctx.channel.id, ctx.guild.id)
+        args = ctx.message.content.split()
+        command = HakariCommand(CommandsEnum.TOP_CHARACTERS, args, metadata)
+        self.bot.CommandQueue.put(command)
+
+    @commands.command(name="team", help="")
+    async def team(self, ctx : commands.Context):
+        metadata = Metadata(ctx.author.id, ctx.channel.id, ctx.guild.id)
+        args = ctx.message.content.split()
+        command = HakariCommand(CommandsEnum.OWNED_CHARACTERS, args, metadata)
+        self.bot.CommandQueue.put(command)
+
+    @commands.command(name="divorce", help="")
+    async def divorce(self, ctx : commands.Context):
+        metadata = Metadata(ctx.author.id, ctx.channel.id, ctx.guild.id)
+        args = ctx.message.content.split()
+        command = HakariCommand(CommandsEnum.DIVORCE, args, metadata)
+        self.bot.CommandQueue.put(command)
+
+    @commands.command(name="search", help="")
+    async def search(self, ctx : commands.Context):
+        metadata = Metadata(ctx.author.id, ctx.channel.id, ctx.guild.id)
+        args = ctx.message.content.split()
+        command = HakariCommand(CommandsEnum.SEARCH, args, metadata)
+        self.bot.CommandQueue.put(command)
 
 # Used to Setup the Cogs used in HakariBot
-async def setup(bot):
+async def setup(bot : HakariBot):
     await bot.add_cog(CommandsCog(bot))

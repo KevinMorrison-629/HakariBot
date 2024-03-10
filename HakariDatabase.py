@@ -181,12 +181,25 @@ class HakariDatabase(Database):
         return (ErrorCode(1), [])
     
     def GetCharacterWithName(self, name : str) -> typing.Tuple[ErrorCode, Character]:
-        return (ErrorCode(1), {})
+        char = Character()
+        if name == "Violet Evergarden":
+            char.about = "Favorite Character"
+            char.alias = ["My Queen"]
+            char.claim_rank = 1
+            char.like_rank = 1
+            char.gender = "F"
+            char.id = 141354
+            char.image_urls = ["VioletEvergarden_141354_0.jpg"]
+            char.name = "Violet Evergarden"
+            char.series = "Violet Evergarden"
+            char.value = 999999
+        return (ErrorCode(1), char)
+    
     def GetCharacterWithId(self, id : int) -> typing.Tuple[ErrorCode, Character]:
-        return (ErrorCode(1), {})
+        return (ErrorCode(1), None)
     
     def GetPlayerOwnedCharacters(self, playerid : int) -> typing.Tuple[ErrorCode, typing.List[Character]]:
-        return (ErrorCode(1), [])
+        return (ErrorCode(1), None)
     
 
 
