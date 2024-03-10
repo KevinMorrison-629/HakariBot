@@ -176,7 +176,7 @@ class BlackMarket:
 
 # Command Classes
     
-class HakariCommands():
+class CommandsEnum():
     ROLL = 0
     DIVORCE = 1
     SEARCH = 2
@@ -186,14 +186,20 @@ class HakariCommands():
     DAILY_ALLOWANCE = 6
     TOP_CHARACTERS = 7
     OWNED_CHARACTERS = 8
+    HELLO = 9
 
-
+class Metadata():
+    def __init__(self, author_id : int, channel_id : int, guild_id : int):
+        self.author_id : int = author_id
+        self.channel_id : int = channel_id
+        self.guild_id : int = guild_id
 
     
 class HakariCommand:
-    def __init__(self):
-        self.command_id : int = -1
-        self.command_parameters : typing.List[str] = []
+    def __init__(self, id : int, params : typing.List[str], metadata : Metadata):
+        self.command_id : int = id
+        self.command_parameters : typing.List[str] = params
+        self.metadata : Metadata = metadata
 
 
 
