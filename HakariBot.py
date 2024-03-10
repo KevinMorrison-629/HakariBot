@@ -21,6 +21,12 @@ from HakariUtils import LogLevel, log
 from HakariDatabase import HakariDatabase
 from HakariClasses import HakariCommand, CommandsEnum, Metadata
 
+
+
+# =============================================================================================== #
+#                                          Hakari Bot                                             #
+# =============================================================================================== #
+
 class HakariBot(commands.Bot):
 
     def __init__(self, *args, **kwargs):
@@ -29,7 +35,7 @@ class HakariBot(commands.Bot):
 
         # Used to Store commands incoming for the bot to process
         self.CommandQueue : multiprocessing.Queue[HakariCommand] = multiprocessing.Queue(maxsize=100)
-        self.threadPool : multiprocessing.Queue[threading.Thread] = multiprocessing.Queue(maxSize=999)
+        self.threadPool : multiprocessing.Queue[threading.Thread] = multiprocessing.Queue(maxsize=999)
 
         # Used to set the bot status (just for a bit of fun i guess)
         self.statusList = cycle([discord.Game('in the Sand'),
@@ -55,7 +61,7 @@ class HakariBot(commands.Bot):
                 # Get next command in queue
                 comm : HakariCommand = self.CommandQueue.get()
                 # Execute Processing on Command
-                log(f"Execute Command {comm.command_id}", LogLevel.INFO)
+                log(f"Execute Command {comm.command_id} with args [{comm.command_parameters}]", LogLevel.INFO)
             except Exception as exc:
                 log(f"Exception When Inserting into Database [{exc}]", LogLevel.ERROR)
 
@@ -76,42 +82,7 @@ class HakariBot(commands.Bot):
         log(f'Logged in as {self.user}', LogLevel.INFO)
 
 
-# =============================================================================================== #
-#                                             Cogs                                              #
-# =============================================================================================== #
-    
-class CommandsCog(commands.Cog):
-    def __init__(self, bot : HakariBot):
-        self.bot : HakariBot = bot
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print("Ready!")
-
-    @commands.command(name="hello", help="Say Hi!")
-    async def hello(self, ctx : commands.Context):
-        metadata = Metadata(ctx.author.id, ctx.channel.id, ctx.guild.id)
-        command = HakariCommand(CommandsEnum.HELLO, [], metadata)
-        self.bot.CommandQueue.put(command)
-
-    @commands.command(name="roll", help="")
-    async def roll(self, ctx : commands.Context, *, message : discord.Message):
-        metadata = Metadata(ctx.author.id, ctx.channel.id, ctx.guild.id)
-        args = message.content.split()
-        command = HakariCommand(CommandsEnum.ROLL, args, metadata)
-        self.bot.CommandQueue.put(command)
-
-    @commands.command(name="ct", help="")
-    async def coinToss(self, ctx : commands.Context, *, message : discord.Message):
-        metadata = Metadata(ctx.author.id, ctx.channel.id, ctx.guild.id)
-        args = message.content.split()
-        command = HakariCommand(CommandsEnum.COIN_TOSS, args, metadata)
-        self.bot.CommandQueue.put(command)
-        return
-
-# Used to Setup the Cogs used in HakariBot
-async def setup(bot):
-    await bot.add_cog(CommandsCog(bot))
 
 
 # =============================================================================================== #

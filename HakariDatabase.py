@@ -16,7 +16,7 @@ class Database:
         self.__connection : sqlite3.Connection = sqlite3.connect(dbfilename)
         self.__cursor : sqlite3.Cursor = self.__connection.cursor()
 
-    def __initialize_table(self, tablename : str, columns : typing.List[str]) -> ErrorCode:
+    def __init_table(self, tablename : str, columns : typing.List[str]) -> ErrorCode:
         """"""
         try:
             col_str = ", ".join(columns)
@@ -56,7 +56,7 @@ class HakariDatabase(Database):
         self.__initialize_tables()
 
         # Define Database Insertion Queue
-        self.DatabaseInsertionQueue : multiprocessing.Queue[typing.Tuple[str, dict[str, typing.Any]]] = multiprocessing.Queue(maxSize=999)
+        self.DatabaseInsertionQueue : multiprocessing.Queue[typing.Tuple[str, dict[str, typing.Any]]] = multiprocessing.Queue(maxsize=999)
         
         # Start Database Insertion Thread
         self.__insertion_thread : threading.Thread = threading.Thread(target=self.__run_insertion_queue, name="InsertionThread")
@@ -65,12 +65,13 @@ class HakariDatabase(Database):
     def __initialize_tables(self):
         # Create SERVERS Table
         columns = ["id INTEGER PRIMARY KEY"]
-        self.__initialize_table("SERVERS", columns)
+        super()._Database__init_table("SERVERS", columns) 
 
         # Create SERVER_PLAYERS Table
         columns = ["guild_id INTEGER",
                    "player_id INTEGER",
                    "FOREIGN KEY (guild_id) REFERENCES SERVERS(id) ON DELETE CASCADE"]
+        super()._Database__init_table("SERVER_PLAYERS", columns) 
 
         # Create CHARACTERS Table
         columns = ["id INTEGER PRIMARY KEY",
@@ -81,19 +82,19 @@ class HakariDatabase(Database):
                    "claim_rank INTEGER",
                    "like_rank INTEGER",
                    "about TEXT"]
-        self.__initialize_table("CHARACTERS", columns)
+        super()._Database__init_table("CHARACTERS", columns) 
 
         # Create CHAR_ALIASES Table
         columns = ["character_id INTEGER",
                    "alias TEXT",
                    "FOREIGN KEY (character_id) REFERENCES CHARACTERS(id) ON DELETE CASCADE"]
-        self.__initialize_table("CHAR_ALIASES", columns)
+        super()._Database__init_table("CHAR_ALIASES", columns)
 
         # Create CHAR_IMAGE_URLS Table
         columns = ["character_id INTEGER",
                    "image_urls TEXT",
                    "FOREIGN KEY (character_id) REFERENCES CHARACTERS(id) ON DELETE CASCADE"]
-        self.__initialize_table("CHAR_IMAGE_URLS", columns)
+        super()._Database__init_table("CHAR_IMAGE_URLS", columns)
 
         # Create PLAYERS Table
         columns = ["id INTEGER PRIMARY KEY",
@@ -108,7 +109,7 @@ class HakariDatabase(Database):
                    "rock_paper_scissors_bonus INTEGER",
                    "blackjack_bonus INTEGER",
                    "FOREIGN KEY (guild_id) REFERENCES SERVERS(id) ON DELETE CASCADE"]
-        self.__initialize_table("PLAYERS", columns)
+        super()._Database__init_table("PLAYERS", columns)
 
         # Create OWNED_CHARACTERS Table
         columns = ["guild_id INTEGER",
@@ -117,7 +118,7 @@ class HakariDatabase(Database):
                    "FOREIGN KEY (guild_id) REFERENCES SERVERS(id) ON DELETE CASCADE",
                    "FOREIGN KEY (player_id) REFERENCES PLAYERS(id) ON DELETE CASCADE",
                    "FOREIGN KEY (character_id) REFERENCES CHARACTERS(id) ON DELETE CASCADE"]
-        self.__initialize_table("OWNED_CHARACTERS", columns)
+        super()._Database__init_table("OWNED_CHARACTERS", columns)
 
         # Create LIKED_CHARACTERS Table
         columns = ["guild_id INTEGER",
@@ -126,39 +127,39 @@ class HakariDatabase(Database):
                    "FOREIGN KEY (guild_id) REFERENCES SERVERS(id) ON DELETE CASCADE",
                    "FOREIGN KEY (player_id) REFERENCES PLAYERS(id) ON DELETE CASCADE",
                    "FOREIGN KEY (character_id) REFERENCES CHARACTERS(id) ON DELETE CASCADE"]
-        self.__initialize_table("LIKED_CHARACTERS", columns)
+        super()._Database__init_table("LIKED_CHARACTERS", columns)
 
         # Create SERIES Table
         columns = ["id INTEGER PRIMARY KEY",
                    "name TEXT",
                    "series_rank INT",
                    "about TEXT"]
-        self.__initialize_table("SERIES", columns)
+        super()._Database__init_table("SERIES", columns)
 
         # Create SERIES_IMAGE_URLS Table
         columns = ["series_id INTEGER",
                    "image_urls TEXT",
                    "FOREIGN KEY (series_id) REFERENCES SERIES(id) ON DELETE CASCADE"]
-        self.__initialize_table("SERIES_IMAGE_URLS", columns)
+        super()._Database__init_table("SERIES_IMAGE_URLS", columns)
 
         # Create SERIES_ALIASES Table
         columns = ["series_id INTEGER",
                    "alias TEXT",
                    "FOREIGN KEY (series_id) REFERENCES SERIES(id) ON DELETE CASCADE"]
-        self.__initialize_table("SERIES_ALIASES", columns)
+        super()._Database__init_table("SERIES_ALIASES", columns)
 
         # Create BLACK_MARKET Table
         columns = ["market_bonus INTEGER",
                    "guild_id INTEGER",
                    "FOREIGN KEY (guild_id) REFERENCES SERVERS(id) ON DELETE CASCADE"]
-        self.__initialize_table("BLACK_MARKET", columns)
+        super()._Database__init_table("BLACK_MARKET", columns)
 
         # Create AVAILABLE_CHARACTERS Table
         columns = ["character_id INTEGER",
                    "guild_id INTEGER",
                    "FOREIGN KEY (guild_id) REFERENCES SERVERS(id) ON DELETE CASCADE",
                    "FOREIGN KEY (character_id) REFERENCES CHARACTERS(id) ON DELETE CASCADE"]
-        self.__initialize_table("AVAILABLE_CHARACTERS", columns)
+        super()._Database__init_table("AVAILABLE_CHARACTERS", columns)
 
     def __run_insertion_queue(self):
         """[Threaded Method] Take the first insertion command in the queue and inserts into the database"""

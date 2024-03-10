@@ -24,5 +24,5 @@ class ErrorCode:
 
 
 def log(val : typing.Any, level : int):
-    if level <= LogLevel.WARNING:
-        print(val)
+    # if level <= LogLevel.WARNING:
+    print(val)
